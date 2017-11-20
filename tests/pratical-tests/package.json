@@ -1,0 +1,22 @@
+{
+  "name": "pratical-tests",
+  "version": "1.0.0",
+  "description": "The intention of this's an experiment, is to test the module usage",
+  "main": "index.js",
+  "scripts": {
+    "test": "node run index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThCC/miitepro-js.git"
+  },
+  "author": "Thiago C de Castro <thiago.decastro2@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ThCC/miitepro-js/issues"
+  },
+  "homepage": "https://github.com/ThCC/miitepro-js#readme",
+  "dependencies": {
+    "mittepro-js": "^1.0.0"
+  }
+}

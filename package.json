@@ -1,6 +1,6 @@
 {
   "name": "mittepro-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MittePro is a powerful marketing tool with features to help companies with their marketing goals and deliver emails from their websites and apps",
   "main": "index.js",
   "scripts": {
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThCC/miitepro-js.git"
+    "url": "git+https://github.com/ThCC/mittepro-js.git"
   },
   "author": "Thiago C de Castro <thiago.decastro2@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ThCC/miitepro-js/issues"
+    "url": "https://github.com/ThCC/mittepro-js/issues"
   },
-  "homepage": "https://github.com/ThCC/miitepro-js#readme",
+  "homepage": "https://github.com/ThCC/mittepro-js#readme",
   "dependencies": {
     "apysignature": "^0.1.3",
     "assert": "^1.4.1",

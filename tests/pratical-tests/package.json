@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThCC/miitepro-js.git"
+    "url": "git+https://github.com/ThCC/mittepro-js.git"
   },
   "author": "Thiago C de Castro <thiago.decastro2@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ThCC/miitepro-js/issues"
+    "url": "https://github.com/ThCC/mittepro-js/issues"
   },
-  "homepage": "https://github.com/ThCC/miitepro-js#readme",
+  "homepage": "https://github.com/ThCC/mittepro-js#readme",
   "dependencies": {
     "mittepro-js": "^1.0.0"
   }

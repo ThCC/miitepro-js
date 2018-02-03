@@ -37,7 +37,7 @@ export default class Api {
         this.apiSecret = secret;
         this.returnRawError = returnRawError || false;
         this.serverUri = serverUri || 'http://postman.alterdata.com.br';
-        this.timeout = timeoutRead > 1 ? timeoutRead + 10 : 11;
+        this.timeout = (timeoutRead > 0 ? timeoutRead : 1) * 1000;
     }
     sendRequest(payload, endpoint, method, headers) {
         const httpMethod = method ? method.toLowerCase() : 'post';

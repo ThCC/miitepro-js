@@ -21,7 +21,7 @@ function getUrl(options) {
 }
 
 export default class Api {
-    constructor(key, secret, returnRawError, serverUri) {
+    constructor(key, secret, returnRawError, serverUri, timeoutRead) {
         if (!key || typeof key !== 'string') {
             throw new NoPublicKey();
         }
@@ -37,8 +37,9 @@ export default class Api {
         this.apiSecret = secret;
         this.returnRawError = returnRawError || false;
         this.serverUri = serverUri || 'http://postman.alterdata.com.br';
+        this.timeout = timeoutRead > 1 ? timeoutRead + 10 : 11;
     }
-    sendRequest(payload, endpoint, method, headers, timeout) {
+    sendRequest(payload, endpoint, method, headers) {
         const httpMethod = method ? method.toLowerCase() : 'post';
         const url = getUrl({
             apiKey: this.apiKey,
@@ -51,7 +52,7 @@ export default class Api {
             url,
             method: httpMethod.toUpperCase(),
             headers: headers || {},
-            timeout: timeout || 25 * 1000,
+            timeout: this.timeout,
         };
         if (httpMethod === 'get') {
             options.qs = payload;

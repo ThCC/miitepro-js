@@ -19,6 +19,7 @@ try {
                 'Foo Bar <foo@bar.com>',
                 'Bar Foo <BAR@FOO.COM>',
             ],
+            sendAt: '2018-02-05 12:42:20',
             from: 'Someone <some@one.com>',
             subject: 'Pratical test of the client-js',
             messageText: 'Pratical test of the client-js',
@@ -54,11 +55,10 @@ const self = {
     key: null,
     secret: null,
     server: null,
-    timeout: 0.5,
+    timeout: 1,
 
     send: (mail, isTemplate) => {
         const client = new MittePro.Client(self.key, self.secret, true, self.server, self.timeout);
-        console.log(client.timeout);
         if (isTemplate) {
             return client.sendTemplate(mail);
         } else {
@@ -67,7 +67,6 @@ const self = {
     },
     searchEmails: () => {
         const client = new MittePro.Client(self.key, self.secret, true, self.server, self.timeout);
-        console.log(client.timeout);
         const searchArgs = new MittePro.SearchArgs({
             appIds: testsVariables.search.appIds,
             end: testsVariables.search.end,
@@ -87,16 +86,19 @@ const self = {
     },
     simpleTextTest: () => {
         const mail = new MittePro.Mail({
+            sendAt: testsVariables.mail.sendAt,
             recipientList: testsVariables.mail.recipientList,
             from: testsVariables.mail.from,
             subject: testsVariables.mail.subject,
             messageText: testsVariables.mail.messageText,
             activateTracking: testsVariables.mail.activateTracking,
         });
+        console.log(mail);
         return self.send(mail);
     },
     templateTest: () => {
         const mail = new MittePro.Mail({
+            sendAt: testsVariables.mail.sendAt,
             recipientList: testsVariables.mail.recipientList,
             subject: testsVariables.mail.subject,
             // messageText: testsVariables.mail.messageText,

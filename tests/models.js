@@ -181,6 +181,45 @@ describe("Filling 'Mail' model with the Wrong Parameters", function () {
         }).should.Throw(Error);
         done();
     });
+    it("should throw 'sendAt', complaining that the parameter 'sendAt' is invalid", function (done) {
+        (function () {
+            var mail = new _model2.Mail({
+                from: 'foo@bar.com',
+                recipientList: ['bar@foo.com'],
+                subject: 'test',
+                messageText: 'Foo bar',
+                sendAt: '2018-12-05 11:14:20:20'
+            });
+            mail.getPayload('text');
+        }).should.Throw(Error);
+        done();
+    });
+    it("should throw 'sendAt', still complaining that the parameter 'sendAt' is invalid", function (done) {
+        (function () {
+            var mail = new _model2.Mail({
+                from: 'foo@bar.com',
+                recipientList: ['bar@foo.com'],
+                subject: 'test',
+                messageText: 'Foo bar',
+                sendAt: '2018-12 11:14:20'
+            });
+            mail.getPayload('text');
+        }).should.Throw(Error);
+        done();
+    });
+    it("should throw 'sendAt', still complaining that the parameter 'sendAt' is invalid", function (done) {
+        (function () {
+            var mail = new _model2.Mail({
+                from: 'foo@bar.com',
+                recipientList: ['bar@foo.com'],
+                subject: 'test',
+                messageText: 'Foo bar',
+                sendAt: '2018 11:14:20'
+            });
+            mail.getPayload('text');
+        }).should.Throw(Error);
+        done();
+    });
 });
 
 describe("Filling 'SearchArgs' model with the Wrong Parameters", function () {

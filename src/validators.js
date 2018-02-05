@@ -1,10 +1,12 @@
 import _ from 'lodash';
+import moment from 'moment';
 import {
     NoParamX,
     NoSubject,
     NoRecipient,
     InvalidFrom,
     NoReplyEmail,
+    InvalidSendAt,
     WrongTypeParamX,
     InvalidRecipientList,
     ParamsShouldBeObject,
@@ -39,6 +41,13 @@ export default class Validators {
             throw new InvalidFrom();
         }
     }
+    validateSendAt() {
+        if (_.has(this.params, 'sendAt') && this.params.sendAt) {
+            if (!moment(this.params.sendAt, ['YYYY-MM-DD HH:mm:ss'], true).isValid()) {
+                throw new InvalidSendAt();
+            }
+        }
+    }
     attrNotInParams(attr) {
         return !_.has(this.params, attr) || !this.params[attr];
     }
@@ -56,6 +65,7 @@ export default class Validators {
         if (!_.isArray(this.params.recipientList)) throw new NoRecipient();
         if (!this.params.recipientList.length) throw new NoRecipient();
         this.validateRecipients();
+        this.validateSendAt();
 
         if (this.attrNotInParams('subject')
             && this.attrNotInParams('useTplDefaultSubject')) {

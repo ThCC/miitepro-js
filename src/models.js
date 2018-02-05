@@ -9,6 +9,7 @@ class Mail {
 
         this.expectedKeys = [
             'tags',
+            'sendAt',
             'subject',
             'from',
             'messageText',

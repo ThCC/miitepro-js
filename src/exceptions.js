@@ -145,6 +145,12 @@ class ParamsShouldBeObject extends ExtendableError {
     }
 }
 
+class InvalidSendAt extends ExtendableError {
+    constructor() {
+        super("Expected format 'YYYY-MM-DD HH:mm:ss' wasn't matched", 'InvalidSendAt');
+    }
+}
+
 
 export {
     ApiError,
@@ -160,6 +166,7 @@ export {
     NoRecipient,
     NoReplyEmail,
     NoSearchArgs,
+    InvalidSendAt,
     WrongTypeParamX,
     NotMailInstance,
     InvalidServerUri,

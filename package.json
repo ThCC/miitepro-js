@@ -1,6 +1,6 @@
 {
   "name": "mittepro-js",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "MittePro is a powerful marketing tool with features to help companies with their marketing goals and deliver emails from their websites and apps",
   "main": "index.js",
   "scripts": {

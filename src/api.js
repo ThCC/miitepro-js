@@ -64,13 +64,20 @@ export default class Api {
                 if (!error && [200, 201].indexOf(response.statusCode) > -1) {
                     f(body);
                 } else {
-                    let err = error;
-                    if (!err) {
-                        err = { Error: _.isString(body) ? body : body.error };
-                    }
                     if (this.returnRawError) {
                         reject({ error, body });
                     } else {
+                        let err = error;
+                        if (!err) {
+                            let msgError;
+                            if (_.isString(body)) {
+                                msgError = body;
+                            } else {
+                                msgError = _.has(body, 'error') ? body.error : body.detail;
+                            }
+
+                            err = { Error: msgError };
+                        }
                         reject(err);
                     }
                 }

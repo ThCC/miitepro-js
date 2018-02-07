@@ -58,7 +58,7 @@ const self = {
     timeout: 1,
 
     send: (mail, isTemplate) => {
-        const client = new MittePro.Client(self.key, self.secret, true, self.server, self.timeout);
+        const client = new MittePro.Client(self.key, self.secret, false, self.server, self.timeout);
         if (isTemplate) {
             return client.sendTemplate(mail);
         } else {
@@ -66,7 +66,7 @@ const self = {
         }
     },
     searchEmails: () => {
-        const client = new MittePro.Client(self.key, self.secret, true, self.server, self.timeout);
+        const client = new MittePro.Client(self.key, self.secret, false, self.server, self.timeout);
         const searchArgs = new MittePro.SearchArgs({
             appIds: testsVariables.search.appIds,
             end: testsVariables.search.end,

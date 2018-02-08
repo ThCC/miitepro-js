@@ -24,6 +24,9 @@ class Mail {
             'useTplDefaultEmail',
             'useTplDefaultSubject',
             'contextPerRecipient',
+            'trackOpen',
+            'trackHtmlLink',
+            'trackTextLink',
         ];
         const keys = _.keys(params);
         _.forEach(keys, (key) => {

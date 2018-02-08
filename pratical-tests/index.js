@@ -86,19 +86,21 @@ const self = {
     },
     simpleTextTest: () => {
         const mail = new MittePro.Mail({
-            sendAt: testsVariables.mail.sendAt,
+            // sendAt: testsVariables.mail.sendAt,
             recipientList: testsVariables.mail.recipientList,
             from: testsVariables.mail.from,
             subject: testsVariables.mail.subject,
-            messageText: testsVariables.mail.messageText,
-            activateTracking: testsVariables.mail.activateTracking,
+            messageText: 'Mah oia só https://pypi.org/',
+            activateTracking: false,
+            trackOpen: true,
+            trackHtmlLink: true,
         });
         console.log(mail);
         return self.send(mail);
     },
     templateTest: () => {
         const mail = new MittePro.Mail({
-            sendAt: testsVariables.mail.sendAt,
+            // sendAt: testsVariables.mail.sendAt,
             recipientList: testsVariables.mail.recipientList,
             subject: testsVariables.mail.subject,
             // messageText: testsVariables.mail.messageText,

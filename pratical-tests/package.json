@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/ThCC/mittepro-js#readme",
   "dependencies": {
-    "mittepro-js": "^1.2.2"
+    "mittepro-js": "^1.3.2"
   }
 }

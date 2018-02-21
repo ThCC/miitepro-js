@@ -151,6 +151,15 @@ class InvalidSendAt extends ExtendableError {
     }
 }
 
+class TimeoutError extends ExtendableError {
+    constructor(timeout) {
+        super(
+            `The server did not respond within the ${timeout} second(s) you stipulated`,
+            'InvalidSendAt'
+        );
+    }
+}
+
 
 export {
     ApiError,
@@ -166,6 +175,7 @@ export {
     NoRecipient,
     NoReplyEmail,
     NoSearchArgs,
+    TimeoutError,
     InvalidSendAt,
     WrongTypeParamX,
     NotMailInstance,

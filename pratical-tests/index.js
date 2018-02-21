@@ -55,10 +55,10 @@ const self = {
     key: null,
     secret: null,
     server: null,
-    timeout: 1,
+    timeout: 0.001,
 
     send: (mail, isTemplate) => {
-        const client = new MittePro.Client(self.key, self.secret, false, self.server, self.timeout);
+        const client = new MittePro.Client(self.key, self.secret, true, self.server, self.timeout);
         if (isTemplate) {
             return client.sendTemplate(mail);
         } else {
@@ -118,7 +118,8 @@ const self = {
     },
     runActions: () => {
         var actions = [
-            'simpleTextTest', 'templateTest',
+            'simpleTextTest',
+            // 'templateTest',
             // 'searchEmails', 'getSpecificEmails'
         ];
         var done = _.after(actions.length, function() {

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import request from 'request';
 import signature from 'apysignature';
 import querystring from 'querystring';
-import { NoPublicKey, NoSecretKey, InvalidServerUri } from './exceptions';
+import { NoPublicKey, NoSecretKey, InvalidServerUri, TimeoutError } from './exceptions';
 
 const apis = {
     text: '/api/send_mail/',
@@ -37,7 +37,7 @@ export default class Api {
         this.apiSecret = secret;
         this.returnRawError = returnRawError || false;
         this.serverUri = serverUri || 'http://postman.alterdata.com.br';
-        this.timeout = (timeoutRead > 0 ? timeoutRead : 1) * 1000;
+        this.timeout = timeoutRead * 1000;
     }
     sendRequest(payload, endpoint, method, headers) {
         const httpMethod = method ? method.toLowerCase() : 'post';
@@ -64,8 +64,14 @@ export default class Api {
                 if (!error && [200, 201].indexOf(response.statusCode) > -1) {
                     f(body);
                 } else {
-                    if (this.returnRawError) {
-                        reject({ error, body });
+                    let errResponse = null;
+                    if (error.code === 'ETIMEDOUT') {
+                        errResponse = { error: `The server did not respond within the ${this.timeout} second(s) you stipulated` };
+                        if (this.returnRawError) {
+                            throw new TimeoutError(this.timeout);
+                        }
+                    } else if (this.returnRawError) {
+                        errResponse = { error, body };
                     } else {
                         let err = error;
                         if (!err) {
@@ -78,8 +84,9 @@ export default class Api {
 
                             err = { Error: msgError };
                         }
-                        reject(err);
+                        errResponse = err;
                     }
+                    reject(errResponse);
                 }
             });
         });

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { atob } from 'b2a';
 import moment from 'moment';
 import {
     NoParamX,
@@ -8,14 +9,22 @@ import {
     NoReplyEmail,
     InvalidSendAt,
     WrongTypeParamX,
+    AttachmentSizeLimit,
+    AttachmentsSizeLimit,
     InvalidRecipientList,
     ParamsShouldBeObject,
     NoTemplateNoFeatures,
+    AttachmentsShouldBeList,
+    AttachmentShouldBeObject,
+    AttachmentShouldHaveName,
+    AttachmentShouldHaveFile,
+    AttachmentFileShouldBeBase64,
 } from './exceptions';
 
 export default class Validators {
     constructor(params) {
         this.params = params;
+        this.attachmentSize = 10;  // MB
     }
     static trackEmail(text) {
         const TRACK_EMAIL_REGEX = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi;
@@ -48,6 +57,39 @@ export default class Validators {
             }
         }
     }
+    validateAttachments() {
+        if (!_.isArray(this.params.attachments)) throw new AttachmentsShouldBeList();
+        let totalAttachmentsSize = 0;
+        _.forEach(this.params.attachments, (attachment) => {
+            if (!_.isObject(attachment)) throw new AttachmentShouldBeObject();
+            if (!_.has(attachment, 'name')
+                || !attachment.name
+                || attachment.name === '') {
+                throw new AttachmentShouldHaveName();
+            }
+            if (!_.has(attachment, 'file')
+                || !attachment.file
+                || attachment.file === '') {
+                throw new AttachmentShouldHaveFile();
+            }
+            let dfile = null;
+            try {
+                dfile = atob(attachment.file);
+            } catch (e) {
+                throw new AttachmentFileShouldBeBase64();
+            }
+            const fileSize = _.divide(dfile.length, (1024 * 1024));
+            if (fileSize > this.attachmentSize) {
+                const diff = fileSize - this.attachmentSize;
+                throw new AttachmentSizeLimit(this.attachmentSize, attachment.name, diff);
+            }
+            totalAttachmentsSize += fileSize;
+        });
+        if (totalAttachmentsSize > this.attachmentSize) {
+            const diff = totalAttachmentsSize - this.attachmentSize;
+            throw new AttachmentsSizeLimit(this.attachmentSize, diff);
+        }
+    }
     attrNotInParams(attr) {
         return !_.has(this.params, attr) || !this.params[attr];
     }
@@ -77,6 +119,7 @@ export default class Validators {
             && this.attrNotInParams('templateSlug')) {
             throw new NoTemplateNoFeatures();
         }
+        if (this.attrInParams('attachments')) this.validateAttachments();
     }
     checkSearchParams() {
         if (!_.isObject(this.params)) throw new ParamsShouldBeObject();

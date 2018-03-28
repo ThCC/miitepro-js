@@ -2,6 +2,8 @@
  * Created by thiago.dsn.cir on 19/10/17.
  */
 const _ = require('lodash');
+const fileSystem = require('fs');
+const b2a = require('b2a');
 const MittePro = require('mittepro-js');
 let testsVariables = null;
 try {
@@ -55,7 +57,7 @@ const self = {
     key: null,
     secret: null,
     server: null,
-    timeout: 0.001,
+    timeout: 20,
 
     send: (mail, isTemplate) => {
         const client = new MittePro.Client(self.key, self.secret, true, self.server, self.timeout);
@@ -84,8 +86,29 @@ const self = {
         const client = new MittePro.Client(self.key, self.secret, true, self.server);
         return client.getSpecificEmails(testsVariables.search.uuids);
     },
-    simpleTextTest: () => {
-        const mail = new MittePro.Mail({
+    createAttachments: () => {
+        return new Promise((resolve) => {
+            const files = [
+                'IMG_0563.JPG',
+                'localcao_asscon.pdf',
+                // '2_7_mb.jpg',
+                // '2_mb.jpg',
+                '1_1_mb.jpg',
+            ];
+            const attachments = [];
+            const done = _.after(files.length, () => {
+                resolve(attachments);
+            });
+            _.each(files, (dfile) => {
+                self.getFile(dfile).then((content) => {
+                    attachments.push({ name: dfile, file: content });
+                    done()
+                });
+            });
+        });
+    },
+    simpleTextTest: (attachments) => {
+        const params = {
             // sendAt: testsVariables.mail.sendAt,
             recipientList: testsVariables.mail.recipientList,
             from: testsVariables.mail.from,
@@ -94,12 +117,14 @@ const self = {
             activateTracking: false,
             trackOpen: true,
             trackHtmlLink: true,
-        });
-        console.log(mail);
+        };
+        if (attachments) params.attachments = attachments;
+        const mail = new MittePro.Mail(params);
+        console.log("SENDED", 'simpleTextTest', 'MittePro.Mail');
         return self.send(mail);
     },
-    templateTest: () => {
-        const mail = new MittePro.Mail({
+    templateTest: (attachments) => {
+        const params = {
             // sendAt: testsVariables.mail.sendAt,
             recipientList: testsVariables.mail.recipientList,
             subject: testsVariables.mail.subject,
@@ -113,16 +138,49 @@ const self = {
             useTplDefaultEmail: testsVariables.mail.useTplDefaultEmail,
             useTplDefaultName: testsVariables.mail.useTplDefaultName,
             activateTracking: testsVariables.mail.activateTracking,
-        });
+        };
+        if (attachments) params.attachments = attachments;
+        const mail = new MittePro.Mail(params);
+        console.log("SENDED", 'templateTest', 'MittePro.Mail');
         return self.send(mail, true);
     },
+    simpleTextTestAttachs: () => {
+        console.log("START", 'simpleTextTestAttachs');
+        return new Promise((resolve, error) => {
+            console.log("START", 'simpleTextTestAttachs', 'createAttachments');
+            self.createAttachments().then((attachments) => {
+                console.log('simpleTextTestAttachs', "have attachments");
+                self.simpleTextTest(attachments).then((response) => {
+                    resolve(response);
+                }, (response) => {
+                    error(response);
+                });
+            });
+        });
+    },
+    templateTestAttachs: () => {
+        console.log("START", 'templateTestAttachs');
+        return new Promise((resolve, error) => {
+            console.log("START", 'templateTestAttachs', 'createAttachments');
+            self.createAttachments().then((attachments) => {
+                console.log('templateTestAttachs', "have attachments");
+                self.templateTest(attachments).then((response) => {
+                    resolve(response);
+                }, (response) => {
+                    error(response);
+                });
+            });
+        });
+    },
     runActions: () => {
-        var actions = [
-            'simpleTextTest',
+        const actions = [
+            'simpleTextTestAttachs',
+            'templateTestAttachs',
+            // 'simpleTextTest',
             // 'templateTest',
             // 'searchEmails', 'getSpecificEmails'
         ];
-        var done = _.after(actions.length, function() {
+        const done = _.after(actions.length, () => {
             process.exit(134);
         });
         if (!actions.length) process.exit(134);
@@ -139,7 +197,10 @@ const self = {
         });
     },
     localTest: (key, secret, server) => {
-        if (!testsVariables.mail.local) console.log('PUT YOUT OWN VARIABLES');
+        if (!testsVariables.mail.local) {
+            console.log('PUT YOUT OWN VARIABLES');
+            return;
+        }
 
         self.key = (!_.isUndefined(key) && key) ? key : testsVariables.mail.local.key;
         self.secret = (!_.isUndefined(secret) && secret) ? secret : testsVariables.mail.local.secret;
@@ -156,6 +217,20 @@ const self = {
 
         self.runActions();
     },
+    getFile: (fileName) => {
+        const path = '/home/local/ALTERDATA/thiago.dsn.cir/test_files/';
+        const fullPath = path + fileName;
+        return new Promise((resolve) => {
+            fileSystem.readFile(fullPath, (err, data) => {
+                // console.log('');
+                // console.log('file name', fileName);
+                // console.log('data size', _.divide(data.length, 1024 * 1024));
+                const dataB64 = b2a.btoa(data.toString());
+                // console.log('dataB64 size', _.divide(data.length, 1024 * 1024));
+                resolve(dataB64);
+            });
+        });
+    }
 };
 
 self.localTest();

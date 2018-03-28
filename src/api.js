@@ -65,7 +65,7 @@ export default class Api {
                     f(body);
                 } else {
                     let errResponse = null;
-                    if (error.code === 'ETIMEDOUT') {
+                    if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
                         errResponse = { error: `The server did not respond within the ${this.timeout} second(s) you stipulated` };
                         if (this.returnRawError) {
                             throw new TimeoutError(this.timeout);

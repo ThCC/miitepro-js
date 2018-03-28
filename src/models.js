@@ -27,6 +27,7 @@ class Mail {
             'trackOpen',
             'trackHtmlLink',
             'trackTextLink',
+            'attachments',
         ];
         const keys = _.keys(params);
         _.forEach(keys, (key) => {

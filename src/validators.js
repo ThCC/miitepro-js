@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { atob } from 'b2a';
+import atob from 'atob';
 import moment from 'moment';
 import {
     NoParamX,

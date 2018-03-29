@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/ThCC/mittepro-js#readme",
   "dependencies": {
-    "b2a": "^1.0.10",
-    "mittepro-js": "^1.4.2"
+    "atob": "^2.1.0",
+    "mittepro-js": "^1.4.4"
   }
 }

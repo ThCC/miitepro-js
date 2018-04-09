@@ -24,7 +24,10 @@ import {
 export default class Validators {
     constructor(params) {
         this.params = params;
-        this.attachmentSize = 10;  // MB
+        this.attachSizeLimit = {
+            megabytes: 10,
+            bytes: 10 * 1024 * 1024,
+        };
     }
     static trackEmail(text) {
         const TRACK_EMAIL_REGEX = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi;
@@ -78,16 +81,17 @@ export default class Validators {
             } catch (e) {
                 throw new AttachmentFileShouldBeBase64();
             }
-            const fileSize = _.divide(dfile.length, (1024 * 1024));
-            if (fileSize > this.attachmentSize) {
-                const diff = fileSize - this.attachmentSize;
-                throw new AttachmentSizeLimit(this.attachmentSize, attachment.name, diff);
+            const fileSize = dfile.length;
+            if (fileSize > this.attachSizeLimit.bytes) {
+                const diff = fileSize - this.attachSizeLimit.bytes;
+                throw new AttachmentSizeLimit(
+                    this.attachSizeLimit.megabytes, attachment.name, diff);
             }
             totalAttachmentsSize += fileSize;
         });
-        if (totalAttachmentsSize > this.attachmentSize) {
-            const diff = totalAttachmentsSize - this.attachmentSize;
-            throw new AttachmentsSizeLimit(this.attachmentSize, diff);
+        if (totalAttachmentsSize > this.attachSizeLimit.bytes) {
+            const diff = totalAttachmentsSize - this.attachSizeLimit.bytes;
+            throw new AttachmentsSizeLimit(this.attachSizeLimit.megabytes, diff);
         }
     }
     attrNotInParams(attr) {

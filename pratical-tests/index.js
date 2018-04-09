@@ -3,7 +3,7 @@
  */
 const _ = require('lodash');
 const fileSystem = require('fs');
-const b2a = require('b2a');
+const btoa = require('btoa');
 const MittePro = require('mittepro-js');
 let testsVariables = null;
 try {
@@ -57,7 +57,7 @@ const self = {
     key: null,
     secret: null,
     server: null,
-    timeout: 20,
+    timeout: 50,
 
     send: (mail, isTemplate) => {
         const client = new MittePro.Client(self.key, self.secret, true, self.server, self.timeout);
@@ -89,11 +89,11 @@ const self = {
     createAttachments: () => {
         return new Promise((resolve) => {
             const files = [
-                'IMG_0563.JPG',
-                'localcao_asscon.pdf',
+                // 'IMG_0563.JPG',
+                // 'localcao_asscon.pdf',
                 // '2_7_mb.jpg',
                 // '2_mb.jpg',
-                '1_1_mb.jpg',
+                'sdf.txt'
             ];
             const attachments = [];
             const done = _.after(files.length, () => {
@@ -150,11 +150,16 @@ const self = {
             console.log("START", 'simpleTextTestAttachs', 'createAttachments');
             self.createAttachments().then((attachments) => {
                 console.log('simpleTextTestAttachs', "have attachments");
-                self.simpleTextTest(attachments).then((response) => {
-                    resolve(response);
-                }, (response) => {
-                    error(response);
-                });
+                try {
+                    self.simpleTextTest(attachments).then((response) => {
+                        resolve(response);
+                    }, (response) => {
+                        error(response);
+                    });
+                } catch (e) {
+                    console.log('error', e);
+                    process.exit(134);
+                }
             });
         });
     },
@@ -164,11 +169,16 @@ const self = {
             console.log("START", 'templateTestAttachs', 'createAttachments');
             self.createAttachments().then((attachments) => {
                 console.log('templateTestAttachs', "have attachments");
-                self.templateTest(attachments).then((response) => {
-                    resolve(response);
-                }, (response) => {
-                    error(response);
-                });
+                try {
+                    self.templateTest(attachments).then((response) => {
+                        resolve(response);
+                    }, (response) => {
+                        error(response);
+                    });
+                } catch (e) {
+                    console.log('error', e);
+                    process.exit(134);
+                }
             });
         });
     },
@@ -225,7 +235,7 @@ const self = {
                 // console.log('');
                 // console.log('file name', fileName);
                 // console.log('data size', _.divide(data.length, 1024 * 1024));
-                const dataB64 = b2a.btoa(data.toString());
+                const dataB64 = btoa(data.toString());
                 // console.log();
                 // console.log(data.toString());
                 // console.log('dataB64 size', _.divide(data.length, 1024 * 1024));

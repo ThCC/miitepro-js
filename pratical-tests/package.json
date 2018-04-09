@@ -18,6 +18,7 @@
   "homepage": "https://github.com/ThCC/mittepro-js#readme",
   "dependencies": {
     "atob": "^2.1.0",
-    "mittepro-js": "^1.4.4"
+    "btoa": "^1.2.1",
+    "mittepro-js": "^1.4.5"
   }
 }

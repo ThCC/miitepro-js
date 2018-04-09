@@ -36,7 +36,7 @@ export default class Api {
         this.apiKey = key;
         this.apiSecret = secret;
         this.returnRawError = returnRawError || false;
-        this.serverUri = serverUri || 'http://postman.alterdata.com.br';
+        this.serverUri = serverUri || 'http://www.mitte.pro';
         this.timeout = timeoutRead * 1000;
     }
     sendRequest(payload, endpoint, method, headers) {

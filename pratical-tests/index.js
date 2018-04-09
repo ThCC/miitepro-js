@@ -90,10 +90,10 @@ const self = {
         return new Promise((resolve) => {
             const files = [
                 // 'IMG_0563.JPG',
-                // 'localcao_asscon.pdf',
-                // '2_7_mb.jpg',
-                // '2_mb.jpg',
-                'sdf.txt'
+                'localcao_asscon.pdf',
+                '2_7_mb.jpg',
+                '2_mb.jpg',
+                // 'sdf.txt'
             ];
             const attachments = [];
             const done = _.after(files.length, () => {
@@ -185,7 +185,7 @@ const self = {
     runActions: () => {
         const actions = [
             'simpleTextTestAttachs',
-            'templateTestAttachs',
+            // 'templateTestAttachs',
             // 'simpleTextTest',
             // 'templateTest',
             // 'searchEmails', 'getSpecificEmails'
@@ -231,11 +231,11 @@ const self = {
         const path = '/home/local/ALTERDATA/thiago.dsn.cir/test_files/';
         const fullPath = path + fileName;
         return new Promise((resolve) => {
-            fileSystem.readFile(fullPath, {encoding: 'utf-8'}, (err, data) => {
+            fileSystem.readFile(fullPath, (err, data) => {
                 // console.log('');
                 // console.log('file name', fileName);
                 // console.log('data size', _.divide(data.length, 1024 * 1024));
-                const dataB64 = btoa(data.toString());
+                const dataB64 = btoa(data);
                 // console.log();
                 // console.log(data.toString());
                 // console.log('dataB64 size', _.divide(data.length, 1024 * 1024));

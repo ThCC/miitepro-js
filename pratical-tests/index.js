@@ -113,7 +113,8 @@ const self = {
             recipientList: testsVariables.mail.recipientList,
             from: testsVariables.mail.from,
             subject: testsVariables.mail.subject,
-            messageText: 'Mah oia só https://pypi.org/',
+            // messageText: 'Mah oia só https://pypi.org/',
+            messageHtml: testsVariables.mail.messageHtml,
             activateTracking: false,
             trackOpen: true,
             trackHtmlLink: true,
@@ -184,9 +185,9 @@ const self = {
     },
     runActions: () => {
         const actions = [
-            'simpleTextTestAttachs',
+            // 'simpleTextTestAttachs',
             // 'templateTestAttachs',
-            // 'simpleTextTest',
+            'simpleTextTest',
             // 'templateTest',
             // 'searchEmails', 'getSpecificEmails'
         ];
@@ -195,6 +196,8 @@ const self = {
         });
         if (!actions.length) process.exit(134);
         _.each(actions, (action) => {
+            console.log('\n');
+            console.log('action', action);
             self[action]().then((success) => {
                 console.log('\n');
                 console.log('success', success);

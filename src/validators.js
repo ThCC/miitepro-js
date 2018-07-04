@@ -35,7 +35,7 @@ export default class Validators {
         return tracked ? tracked[0] : null;
     }
     static isEmailInvalid(text) {
-        const EMAIL_REGEX = /(^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$)/gi;
+        const EMAIL_REGEX = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/gi;
         const email = Validators.trackEmail(text);
         if (!email) return true;
         const result = email.match(EMAIL_REGEX);

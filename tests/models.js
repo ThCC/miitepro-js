@@ -123,7 +123,7 @@ describe("Filling 'Mail' model with the Wrong Parameters", function () {
         }).should.Throw(Error);
         done();
     });
-    it("should throw 'NoText', complaining that there's no messageText", function (done) {
+    it("should throw 'NoContent', complaining that there's no messageText", function (done) {
         (function () {
             var mail = new _model2.Mail({
                 from: 'foo@bar.com',
@@ -134,7 +134,7 @@ describe("Filling 'Mail' model with the Wrong Parameters", function () {
         }).should.Throw(Error);
         done();
     });
-    it("should throw 'NoText', still complaining that there's no messageText, even if passed an empty string", function (done) {
+    it("should throw 'NoContent', still complaining that there's no messageText, even if passed an empty string", function (done) {
         (function () {
             var mail = new _model2.Mail({
                 from: 'foo@bar.com',

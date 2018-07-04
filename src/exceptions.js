@@ -18,9 +18,10 @@ class ApiError extends ExtendableError {
     }
 }
 
-class NoText extends ExtendableError {
+class NoContent extends ExtendableError {
     constructor() {
-        super('Impossible to send a simple email without a text content', 'NoText');
+        super('Impossible to send a simple email without content. Pass one of these arguments: ' +
+            '"message_text", "message_html" ou "attachments"', 'NoContent');
     }
 }
 
@@ -230,9 +231,9 @@ class AttachmentsSizeLimit extends ExtendableError {
 export {
     ApiError,
     NoMail,
-    NoText,
     NoParamX,
     NoSubject,
+    NoContent,
     NoEndpoint,
     NoTemplate,
     InvalidFrom,

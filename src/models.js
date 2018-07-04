@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Validators from './validators';
-import { NoEndpoint, NoText, NoTemplate } from './exceptions';
+import { NoEndpoint, NoContent, NoTemplate } from './exceptions';
 
 class Mail {
     constructor(params) {
@@ -39,8 +39,10 @@ class Mail {
     getPayload(endpoint) {
         if (!endpoint) throw new NoEndpoint();
         if (endpoint === 'text') {
-            if (!(_.has(this, 'messageText') && this.messageText)) {
-                throw new NoText();
+            if (!(_.has(this, 'messageText') && this.messageText)
+                && !(_.has(this, 'messageHtml') && this.messageHtml)
+                && !(_.has(this, 'attachments') && this.attachments)) {
+                throw new NoContent();
             }
         } else {
             if (!(_.has(this, 'templateSlug') || _.has(this, 'messageHtml'))) {

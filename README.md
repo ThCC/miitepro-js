@@ -18,7 +18,7 @@ Follow the examples below to send simple emails or emails with templates:
     var MittePro = require('mittepro-js');
 
     var textMail = new MittePro.Mail({
-        recipientList: ['Foo Bar <foo.bar@mail.com>', 'Fulano Aquino <fulano.aquino@mail.com>', '<ciclano.norego@mail.com>'],
+        recipientList: ['Foo Bar <foo.bar@mail.com>', 'Fulano Aquino <fulano@mail.com>', '<ciclano@mail.com>'],
         messageText: 'Simple text message.',
         from: 'Beutrano <beutrano@mail.com>',
         subject: 'Just a test - Sended From Client'
@@ -37,7 +37,7 @@ Follow the examples below to send simple emails or emails with templates:
     var MittePro = require('mittepro-js');
 
     var templateMail = new MittePro.Mail({
-        recipientList: ['Foo Bar <foo.bar@mail.com>', 'Fulano Aquino <fulano.aquino@mail.com>', '<ciclano.norego@mail.com>'],
+        recipientList: ['Foo Bar <foo.bar@mail.com>', 'Fulano Aquino <fulano@mail.com>', '<ciclano@mail.com>'],
         from: 'Beutrano <beutrano@mail.com>',
         templateSlug: 'test-101',
         context: {'foobar': true},

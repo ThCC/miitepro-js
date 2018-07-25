@@ -21,7 +21,7 @@ class ApiError extends ExtendableError {
 class NoContent extends ExtendableError {
     constructor() {
         super('Impossible to send a simple email without content. Pass one of these arguments: ' +
-            '"message_text", "message_html" ou "attachments"', 'NoContent');
+            '"messageText", "messageHtml" ou "attachments"', 'NoContent');
     }
 }
 

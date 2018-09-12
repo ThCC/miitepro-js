@@ -126,17 +126,32 @@ class WrongTypeParamX extends ExtendableError {
 }
 
 class InvalidRecipientList extends ExtendableError {
+    constructor(email) {
+        super(
+            `The e-mail ${email} of the 'recipientList' parameter is invalid`,
+            'InvalidRecipientList'
+        );
+    }
+}
+
+class InvalidFormatRecipientList extends ExtendableError {
     constructor() {
         super(
             "Expected format ('Name <email>'; or '<email>') wasn't matched",
-            'InvalidRecipientList'
+            'InvalidFormatRecipientList'
         );
     }
 }
 
 class InvalidFrom extends ExtendableError {
     constructor() {
-        super("Expected format ('Name <email>'; or '<email>') wasn't matched", 'InvalidFrom');
+        super("The e-mail of the 'From' parameter is invalid", 'InvalidFrom');
+    }
+}
+
+class InvalidFromFormat extends ExtendableError {
+    constructor() {
+        super("Expected format ('Name <email>'; or '<email>') wasn't matched", 'InvalidFromFormat');
     }
 }
 
@@ -227,6 +242,52 @@ class AttachmentsSizeLimit extends ExtendableError {
     }
 }
 
+class BatchIsRequired extends ExtendableError {
+    constructor(contacts) {
+        super(`Can not send more than ${contacts} contacts without providing 
+        batch parameter with minimum value of 2`, 'BatchIsRequired');
+    }
+}
+
+class InvalidBatch extends ExtendableError {
+    constructor() {
+        super('Parameter not supplied or value is invalid', 'InvalidBatch');
+    }
+}
+
+class InvalidTimeBetweemBatchs extends ExtendableError {
+    constructor() {
+        super('Parameter not supplied or value is invalid', 'InvalidTimeBetweemBatchs');
+    }
+}
+
+class BatchLowerThan2 extends ExtendableError {
+    constructor() {
+        super('The parameter is less than 2', 'BatchLowerThan2');
+    }
+}
+
+class TimeBetweemBatchsLessThan5 extends ExtendableError {
+    constructor() {
+        super('The parameter is less than 5', 'TimeBetweemBatchsLessThan5');
+    }
+}
+
+class BatchSizeLimit extends ExtendableError {
+    constructor(limit) {
+        super(`Batch size exceeds the limit of ${limit} emails`, 'BatchSizeLimit');
+    }
+}
+
+class BatchDistributionInvalid extends ExtendableError {
+    constructor() {
+        super(
+            `The distribution between batches is invalid, probably the number 
+            of recipients is not multiple of batches`,
+            'BatchDistributionInvalid'
+        );
+    }
+}
 
 export {
     ApiError,
@@ -243,10 +304,15 @@ export {
     NoReplyEmail,
     NoSearchArgs,
     TimeoutError,
+    InvalidBatch,
     InvalidSendAt,
+    BatchSizeLimit,
+    BatchIsRequired,
+    BatchLowerThan2,
     WrongTypeParamX,
     NotMailInstance,
     InvalidServerUri,
+    InvalidFromFormat,
     AttachmentSizeLimit,
     AttachmentsSizeLimit,
     NoSearchArgsInstance,
@@ -257,5 +323,9 @@ export {
     AttachmentShouldBeObject,
     AttachmentShouldHaveName,
     AttachmentShouldHaveFile,
+    InvalidTimeBetweemBatchs,
+    BatchDistributionInvalid,
+    TimeBetweemBatchsLessThan5,
+    InvalidFormatRecipientList,
     AttachmentFileShouldBeBase64,
 };

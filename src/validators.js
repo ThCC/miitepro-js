@@ -6,9 +6,14 @@ import {
     NoSubject,
     NoRecipient,
     InvalidFrom,
+    InvalidBatch,
     NoReplyEmail,
     InvalidSendAt,
+    BatchSizeLimit,
+    BatchLowerThan2,
+    BatchIsRequired,
     WrongTypeParamX,
+    InvalidFromFormat,
     AttachmentSizeLimit,
     AttachmentsSizeLimit,
     InvalidRecipientList,
@@ -18,6 +23,10 @@ import {
     AttachmentShouldBeObject,
     AttachmentShouldHaveName,
     AttachmentShouldHaveFile,
+    InvalidTimeBetweemBatchs,
+    BatchDistributionInvalid,
+    TimeBetweemBatchsLessThan5,
+    InvalidFormatRecipientList,
     AttachmentFileShouldBeBase64,
 } from './exceptions';
 
@@ -28,27 +37,45 @@ export default class Validators {
             megabytes: 10,
             bytes: 10 * 1024 * 1024,
         };
+        this.batchMinSize = 2;
+        this.batchMinTime = 5;
+        this.totalEmailLimit = 500;
     }
     static trackEmail(text) {
         const TRACK_EMAIL_REGEX = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi;
         const tracked = text.match(TRACK_EMAIL_REGEX);
         return tracked ? tracked[0] : null;
     }
+    static isEmailFormatInvalid(text) {
+        const email = Validators.trackEmail(text);
+        return email === null;
+    }
     static isEmailInvalid(text) {
         const EMAIL_REGEX = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/gi;
         const email = Validators.trackEmail(text);
-        if (!email) return true;
         const result = email.match(EMAIL_REGEX);
         return result === null;
     }
     validateRecipients() {
         _.forEach(this.params.recipientList, (recipient) => {
+            if (Validators.isEmailFormatInvalid(recipient)) {
+                throw new InvalidFormatRecipientList();
+            }
             if (Validators.isEmailInvalid(recipient)) {
-                throw new InvalidRecipientList();
+                throw new InvalidRecipientList(recipient);
             }
         });
+
+        const batchs = this.attrInParams('batchs') ? this.params.batchs : null;
+        const totalRecipients = this.params.recipientList.length;
+        if (batchs === null && totalRecipients > this.totalEmailLimit) {
+            throw new BatchIsRequired(totalRecipients);
+        }
     }
     validadeFrom() {
+        if (Validators.isEmailFormatInvalid(this.params.from)) {
+            throw new InvalidFromFormat();
+        }
         if (Validators.isEmailInvalid(this.params.from)) {
             throw new InvalidFrom();
         }
@@ -94,6 +121,51 @@ export default class Validators {
             throw new AttachmentsSizeLimit(this.attachSizeLimit.megabytes, diff);
         }
     }
+    validateBatchsArgs() {
+        if (this.attrInParams('batchs') || this.attrInParams('timeBetweenBatchs')) {
+            if (this.attrNotInParams('batchs')) throw new InvalidBatch();
+            if (!_.isNumber(this.params.batchs)) throw new InvalidBatch();
+            if (this.attrNotInParams('timeBetweenBatchs')) throw new InvalidTimeBetweemBatchs();
+            if (!_.isNumber(this.params.timeBetweenBatchs)) throw new InvalidTimeBetweemBatchs();
+            if (this.params.batchs < this.batchMinSize) throw new BatchLowerThan2();
+            if (this.params.timeBetweenBatchs < this.batchMinTime) {
+                throw new TimeBetweemBatchsLessThan5();
+            }
+            const batchs = _.floor(this.params.batchs);
+            const tempTime = _.floor(this.params.timeBetweenBatchs);
+            const timeBetweenBatchs = this.batchMinTime * _.floor(tempTime / this.batchMinTime);
+
+            if (batchs < this.batchMinSize) throw new InvalidBatch();
+            if (timeBetweenBatchs < this.batchMinTime) throw new InvalidTimeBetweemBatchs();
+            this.params.batchs = batchs;
+            this.params.timeBetweenBatchs = timeBetweenBatchs;
+
+            let systemTakeOver = null;
+            let lastBatchPlusOne = null;
+            if (this.attrInParams('headers')) {
+                if (_.has(this.params.headers, 'system_take_over')
+                    && this.params.headers.system_take_over) {
+                    systemTakeOver = this.params.headers.system_take_over;
+                }
+                if (_.has(this.params.headers, 'last_batch_plus_one')
+                    && this.params.headers.last_batch_plus_one) {
+                    lastBatchPlusOne = this.params.headers.last_batch_plus_one;
+                }
+            }
+
+            if (systemTakeOver === null && lastBatchPlusOne === null) {
+                const totalRecipients = this.params.recipientList.length;
+                const batchsSize = _.floor(totalRecipients / this.params.batchs);
+
+                if (batchsSize > this.totalEmailLimit) {
+                    throw new BatchSizeLimit(this.totalEmailLimit);
+                }
+                if ((batchsSize * batchs) !== totalRecipients) {
+                    throw new BatchDistributionInvalid();
+                }
+            }
+        }
+    }
     attrNotInParams(attr) {
         return !_.has(this.params, attr) || !this.params[attr];
     }
@@ -110,6 +182,7 @@ export default class Validators {
         if (this.attrNotInParams('recipientList')) throw new NoRecipient();
         if (!_.isArray(this.params.recipientList)) throw new NoRecipient();
         if (!this.params.recipientList.length) throw new NoRecipient();
+        this.validateBatchsArgs();
         this.validateRecipients();
         this.validateSendAt();
 

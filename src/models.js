@@ -28,6 +28,8 @@ class Mail {
             'trackHtmlLink',
             'trackTextLink',
             'attachments',
+            'batchs',
+            'timeBetweenBatchs',
         ];
         const keys = _.keys(params);
         _.forEach(keys, (key) => {

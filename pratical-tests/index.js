@@ -118,6 +118,8 @@ const self = {
             activateTracking: false,
             trackOpen: true,
             trackHtmlLink: true,
+            timeBetweenBatchs: 5,
+            headers: {'systemTakesOverBatchs': true}
         };
         if (attachments) params.attachments = attachments;
         const mail = new MittePro.Mail(params);

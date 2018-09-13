@@ -123,11 +123,18 @@ export default class Validators {
     }
     validateBatchsArgs() {
         if (this.attrInParams('batchs') || this.attrInParams('timeBetweenBatchs')) {
-            if (this.attrNotInParams('batchs')) throw new InvalidBatch();
-            if (!_.isNumber(this.params.batchs)) throw new InvalidBatch();
+            if (this.attrNotInParams('batchs') && this.attrNotInHeaders('systemTakesOverBatchs')) {
+                throw new InvalidBatch();
+            }
+            if (!_.isNumber(this.params.batchs) && this.attrNotInHeaders('systemTakesOverBatchs')) {
+                throw new InvalidBatch();
+            }
             if (this.attrNotInParams('timeBetweenBatchs')) throw new InvalidTimeBetweemBatchs();
             if (!_.isNumber(this.params.timeBetweenBatchs)) throw new InvalidTimeBetweemBatchs();
-            if (this.params.batchs < this.batchMinSize) throw new BatchLowerThan2();
+            if (this.params.batchs < this.batchMinSize
+                && this.attrNotInHeaders('systemTakesOverBatchs')) {
+                throw new BatchLowerThan2();
+            }
             if (this.params.timeBetweenBatchs < this.batchMinTime) {
                 throw new TimeBetweemBatchsLessThan5();
             }
@@ -135,25 +142,14 @@ export default class Validators {
             const tempTime = _.floor(this.params.timeBetweenBatchs);
             const timeBetweenBatchs = this.batchMinTime * _.floor(tempTime / this.batchMinTime);
 
-            if (batchs < this.batchMinSize) throw new InvalidBatch();
+            if (batchs < this.batchMinSize && this.attrNotInHeaders('systemTakesOverBatchs')) {
+                throw new InvalidBatch();
+            }
             if (timeBetweenBatchs < this.batchMinTime) throw new InvalidTimeBetweemBatchs();
             this.params.batchs = batchs;
             this.params.timeBetweenBatchs = timeBetweenBatchs;
 
-            let systemTakeOver = null;
-            let lastBatchPlusOne = null;
-            if (this.attrInParams('headers')) {
-                if (_.has(this.params.headers, 'system_take_over')
-                    && this.params.headers.system_take_over) {
-                    systemTakeOver = this.params.headers.system_take_over;
-                }
-                if (_.has(this.params.headers, 'last_batch_plus_one')
-                    && this.params.headers.last_batch_plus_one) {
-                    lastBatchPlusOne = this.params.headers.last_batch_plus_one;
-                }
-            }
-
-            if (systemTakeOver === null && lastBatchPlusOne === null) {
+            if (this.attrNotInHeaders('systemTakesOverBatchs')) {
                 const totalRecipients = this.params.recipientList.length;
                 const batchsSize = _.floor(totalRecipients / this.params.batchs);
 
@@ -171,6 +167,14 @@ export default class Validators {
     }
     attrInParams(attr) {
         return _.has(this.params, attr) && this.params[attr];
+    }
+    attrNotInHeaders(attr) {
+        if (this.attrNotInParams('headers')) return true;
+        return !_.has(this.params.headers, attr) || !this.params.headers[attr];
+    }
+    attrInHeaders(attr) {
+        if (this.attrNotInParams('headers')) return false;
+        return _.has(this.params.headers, attr) && this.params.headers[attr];
     }
     checkMailParams() {
         if (!_.isObject(this.params)) throw new ParamsShouldBeObject();

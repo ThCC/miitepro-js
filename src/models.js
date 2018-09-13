@@ -61,6 +61,12 @@ class Mail {
                 payload[_.snakeCase(key)] = this[key];
             }
         });
+        if (_.has(payload, 'headers')) {
+            _.forEach(_.keys(payload.headers), (key) => {
+                payload.headers[_.snakeCase(key)] = payload.headers[key];
+                delete payload.headers[key];
+            });
+        }
         payload.sended_by = 5;
         return payload;
     }

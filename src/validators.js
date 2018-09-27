@@ -68,7 +68,9 @@ export default class Validators {
 
         const batchs = this.attrInParams('batchs') ? this.params.batchs : null;
         const totalRecipients = this.params.recipientList.length;
-        if (batchs === null && totalRecipients > this.totalEmailLimit) {
+        if (batchs === null
+            && this.attrNotInHeaders('systemTakesOverBatchs')
+            && totalRecipients > this.totalEmailLimit) {
             throw new BatchIsRequired(totalRecipients);
         }
     }

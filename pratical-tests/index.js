@@ -60,6 +60,7 @@ const self = {
     timeout: 50,
 
     send: (mail, isTemplate) => {
+        console.log(mail);
         const client = new MittePro.Client(self.key, self.secret, true, self.server, self.timeout);
         if (isTemplate) {
             return client.sendTemplate(mail);
@@ -189,8 +190,8 @@ const self = {
         const actions = [
             // 'simpleTextTestAttachs',
             // 'templateTestAttachs',
-            'simpleTextTest',
-            // 'templateTest',
+            // 'simpleTextTest',
+            'templateTest',
             // 'searchEmails', 'getSpecificEmails'
         ];
         const done = _.after(actions.length, () => {

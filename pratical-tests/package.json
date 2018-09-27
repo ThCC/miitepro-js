@@ -19,6 +19,6 @@
   "dependencies": {
     "atob": "^2.1.0",
     "btoa": "^1.2.1",
-    "mittepro-js": "^1.7.2"
+    "mittepro-js": "^1.7.3"
   }
 }

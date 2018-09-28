@@ -30,6 +30,7 @@ class Mail {
             'attachments',
             'batchs',
             'timeBetweenBatchs',
+            'recipientsPerBatchs',
         ];
         const keys = _.keys(params);
         _.forEach(keys, (key) => {

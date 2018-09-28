@@ -255,6 +255,14 @@ class InvalidBatch extends ExtendableError {
     }
 }
 
+class BatchParamsNotInform extends ExtendableError {
+    constructor() {
+        super(
+            'Parameters "batchs" and "recipientsPerBatchs" not supplied', 'BatchParamsNotInform'
+        );
+    }
+}
+
 class InvalidTimeBetweemBatchs extends ExtendableError {
     constructor() {
         super('Parameter not supplied or value is invalid', 'InvalidTimeBetweemBatchs');
@@ -276,6 +284,15 @@ class TimeBetweemBatchsLessThan5 extends ExtendableError {
 class BatchSizeLimit extends ExtendableError {
     constructor(limit) {
         super(`Batch size exceeds the limit of ${limit} emails`, 'BatchSizeLimit');
+    }
+}
+
+class RecipientPerBatchGreater extends ExtendableError {
+    constructor(limit) {
+        super(
+            'O valor do parâmetro "recipientsPerBatchs" é maior que a quantidade de destinatários',
+            'RecipientPerBatchGreater'
+        );
     }
 }
 
@@ -314,12 +331,14 @@ export {
     InvalidServerUri,
     InvalidFromFormat,
     AttachmentSizeLimit,
+    BatchParamsNotInform,
     AttachmentsSizeLimit,
     NoSearchArgsInstance,
     NoTemplateNoFeatures,
     InvalidRecipientList,
     ParamsShouldBeObject,
     AttachmentsShouldBeList,
+    RecipientPerBatchGreater,
     AttachmentShouldBeObject,
     AttachmentShouldHaveName,
     AttachmentShouldHaveFile,

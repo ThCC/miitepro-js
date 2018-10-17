@@ -5,7 +5,7 @@ import querystring from 'querystring';
 import { NoPublicKey, NoSecretKey, InvalidServerUri, TimeoutError } from './exceptions';
 
 /*
-* VERSION 1.8.3
+* VERSION 1.8.4
 * */
 
 const apis = {
@@ -70,18 +70,24 @@ export default class Api {
                 } else {
                     let errResponse = null;
                     if (error && (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT')) {
-                        errResponse = { error: `The server did not respond within the ${this.timeout} second(s) you stipulated` };
+                        errResponse = {
+                            error: `The server did not respond within the 
+                            ${this.timeout} second(s) you stipulated`,
+                        };
                         if (this.returnRawError) {
                             throw new TimeoutError(this.timeout);
                         }
                     } else if (this.returnRawError) {
-                        errResponse = { error, body };
+                        errResponse = {
+                            error,
+                            body: body.slice(0, body.indexOf('Request Method')).trim(),
+                        };
                     } else {
                         let err = error;
                         if (!err) {
                             let msgError;
                             if (_.isString(body)) {
-                                msgError = body;
+                                msgError = body.slice(0, body.indexOf('Request Method')).trim();
                             } else {
                                 msgError = _.has(body, 'error') ? body.error : body.detail;
                             }

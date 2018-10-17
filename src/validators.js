@@ -187,6 +187,12 @@ export default class Validators {
             if (batchsSize > this.totalEmailLimit) {
                 throw new BatchSizeLimit(this.totalEmailLimit);
             }
+
+            const remaining = totalRecipients % batchs;
+            const lastBatchPlusOne = this.attrInHeaders('lastBatchPlusOne');
+
+            if (remaining && lastBatchPlusOne) return true;
+
             if ((batchsSize * batchs) !== totalRecipients) {
                 throw new BatchDistributionInvalid();
             }

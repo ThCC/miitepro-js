@@ -20,7 +20,7 @@ class ApiError extends ExtendableError {
 
 class NoContent extends ExtendableError {
     constructor() {
-        super('Impossible to send a simple email without content. Pass one of these arguments: ' +
+        super('Impossível enviar um email sem conteúdo. É preciso fornecer um dos parâmetros ' +
             '"messageText", "messageHtml" ou "attachments"', 'NoContent');
     }
 }
@@ -28,8 +28,8 @@ class NoContent extends ExtendableError {
 class NoTemplate extends ExtendableError {
     constructor() {
         super(
-            'Impossible to send a template email without a html content. ' +
-            'Either you pass the templateSlug or the messageHtml',
+            'Impossível enviar um email de template, sem conteúdo html. ' +
+            'Ou você fornece o templateSlug ou o messageHtml',
             'NoTemplate'
         );
     }
@@ -38,7 +38,7 @@ class NoTemplate extends ExtendableError {
 class NoTemplateNoFeatures extends ExtendableError {
     constructor() {
         super(
-            "Impossible to use template features, without passing 'templateSlug'",
+            "Impossível usar as funcionalidade de template, sem fornecer o 'templateSlug'",
             'NoTemplateNoFeatures'
         );
     }
@@ -46,80 +46,83 @@ class NoTemplateNoFeatures extends ExtendableError {
 
 class NoMail extends ExtendableError {
     constructor() {
-        super("Impossible to send an email if there's no mail", 'NoMail');
+        super('Impossível enviar um email sem os parâmetros', 'NoMail');
     }
 }
 
 class NotMailInstance extends ExtendableError {
     constructor() {
-        super('Expecting a Mail instance', 'NotMailInstance');
+        super('Esperando uma instância do modelo Mail', 'NotMailInstance');
     }
 }
 
 class NoEndpoint extends ExtendableError {
     constructor() {
-        super('Impossible to get the payload without the endpoint', 'NoEndpoint');
+        super('Impossível de adquirir o payload sem o endpoint', 'NoEndpoint');
     }
 }
 
 class NoSubject extends ExtendableError {
     constructor() {
-        super('Impossible to send email without a subject', 'NoSubject');
+        super('Impossível de enviar um email sem assunto', 'NoSubject');
     }
 }
 
 class NoRecipient extends ExtendableError {
     constructor() {
-        super('Impossible to send email without any recipient', 'NoRecipient');
+        super('Impossível de enviar um email sem ao menos um destinatário', 'NoRecipient');
     }
 }
 
 class NoPublicKey extends ExtendableError {
     constructor() {
-        super("MitteProError. There's no Public Key.", 'NoPublicKey');
+        super('MitteProError. Sem chave pública.', 'NoPublicKey');
     }
 }
 
 class NoSecretKey extends ExtendableError {
     constructor() {
-        super("MitteProError. There's no Secret Key.", 'NoSecretKey');
+        super("MitteProError. Sem chave privada.", 'NoSecretKey');
     }
 }
 
 class InvalidServerUri extends ExtendableError {
     constructor() {
-        super('MitteProError. Invalid server uri, it was expecting a string.', 'InvalidServerUri');
+        super(
+            'MitteProError. Inválida uride do servidor, é esperado uma string.',
+            'InvalidServerUri'
+        );
     }
 }
 
 class NoReplyEmail extends ExtendableError {
     constructor() {
-        super('Please provide an reply email', 'NoReplyEmail');
+        super('Forneça um email de rementente', 'NoReplyEmail');
     }
 }
 
 class NoSearchArgs extends ExtendableError {
-    constructor(paramName) {
-        super('Impossible to get emails without search arguments', 'NoSearchArgs');
+    constructor() {
+        super('Impossível adquirir emails sem parâmetros para pesquisa', 'NoSearchArgs');
     }
 }
 
 class NoSearchArgsInstance extends ExtendableError {
-    constructor(paramName) {
-        super('Expecting a SearchArgs instance', 'NoSearchArgsInstance');
+    constructor() {
+        super('Esperando uma instância do modelo SearchArgs', 'NoSearchArgsInstance');
     }
 }
 
 class NoParamX extends ExtendableError {
     constructor(paramName) {
-        super(`Please provide the ${paramName}`, `NoParam${_.capitalize(paramName)}`);
+        super(`Forneça o parâmetro ${paramName}`, `NoParam${_.capitalize(paramName)}`);
     }
 }
 
 class WrongTypeParamX extends ExtendableError {
     constructor(dType, paramName) {
         super(
-            `Parameter ${paramName} has to be of the type ${dType}`,
+            `Parâmetro ${paramName} tem que ser do tipo ${dType}`,
             `WrongTypeParam${_.capitalize(paramName)}`
         );
     }
@@ -128,7 +131,7 @@ class WrongTypeParamX extends ExtendableError {
 class InvalidRecipientList extends ExtendableError {
     constructor(email) {
         super(
-            `The e-mail ${email} of the 'recipientList' parameter is invalid`,
+            `O email ${email} do parâmetro 'recipientList' é inválido`,
             'InvalidRecipientList'
         );
     }
@@ -137,7 +140,7 @@ class InvalidRecipientList extends ExtendableError {
 class InvalidFormatRecipientList extends ExtendableError {
     constructor() {
         super(
-            "Expected format ('Name <email>'; or '<email>') wasn't matched",
+            "O formato esperado ('Name <email>'; or '<email>') não foi encontrado",
             'InvalidFormatRecipientList'
         );
     }
@@ -145,32 +148,35 @@ class InvalidFormatRecipientList extends ExtendableError {
 
 class InvalidFrom extends ExtendableError {
     constructor() {
-        super("The e-mail of the 'From' parameter is invalid", 'InvalidFrom');
+        super("O email do parâmetro 'From' está inválido", 'InvalidFrom');
     }
 }
 
 class InvalidFromFormat extends ExtendableError {
     constructor() {
-        super("Expected format ('Name <email>'; or '<email>') wasn't matched", 'InvalidFromFormat');
+        super(
+            "O formato esperado ('Name <email>'; or '<email>') não foi encontrado",
+            'InvalidFromFormat'
+        );
     }
 }
 
 class ParamsShouldBeObject extends ExtendableError {
     constructor() {
-        super('Parameters should it be an object', 'ParamsShouldBeObject');
+        super('Parâmetros devem ser objetos', 'ParamsShouldBeObject');
     }
 }
 
 class InvalidSendAt extends ExtendableError {
     constructor() {
-        super("Expected format 'YYYY-MM-DD HH:mm:ss' wasn't matched", 'InvalidSendAt');
+        super("O formato esperado 'YYYY-MM-DD HH:mm:ss' não foi encontrado", 'InvalidSendAt');
     }
 }
 
 class TimeoutError extends ExtendableError {
     constructor(timeout) {
         super(
-            `The server did not respond within the ${timeout} second(s) you stipulated`,
+            `O servidor não respondeu dentro tempo que você estipulou de ${timeout} segundo(s)`,
             'TimeoutError'
         );
     }
@@ -179,8 +185,8 @@ class TimeoutError extends ExtendableError {
 class AttachmentsShouldBeList extends ExtendableError {
     constructor() {
         super(
-            `Attachments should be a List of objects. 
-            Like: [{name: 'foo.bar', file: 'IJHJHbkhyi876'}]`,
+            `Anexos devem ser uma lista de objetos. 
+            Exemplo: [{name: 'foo.bar', file: 'IJHJHbkhyi876'}]`,
             'AttachmentsShouldBeList'
         );
     }
@@ -189,8 +195,8 @@ class AttachmentsShouldBeList extends ExtendableError {
 class AttachmentShouldBeObject extends ExtendableError {
     constructor() {
         super(
-            `Attachment should be an object. 
-            Like: {name: 'foo.bar', file: 'IJHJHbkhyi876'}`,
+            `Anexo deve ser um objeto. 
+            Exemplo: {name: 'foo.bar', file: 'IJHJHbkhyi876'}`,
             'AttachmentShouldBeObject'
         );
     }
@@ -199,8 +205,8 @@ class AttachmentShouldBeObject extends ExtendableError {
 class AttachmentShouldHaveName extends ExtendableError {
     constructor() {
         super(
-            `Attachment should have an name. 
-            Like: {name: 'foo.bar', file: 'IJHJHbkhyi876'}`,
+            `Anexo tem que conter um name ('nome'). 
+            Exemplo: {name: 'foo.bar', file: 'IJHJHbkhyi876'}`,
             'AttachmentShouldHaveName'
         );
     }
@@ -209,8 +215,8 @@ class AttachmentShouldHaveName extends ExtendableError {
 class AttachmentShouldHaveFile extends ExtendableError {
     constructor() {
         super(
-            `Attachment should have the contents of the file in base64. 
-            Like: {name: 'foo.bar', file: 'IJHJHbkhyi876'}`,
+            `Anexo tem que conter o conteúdo do arquivo em base64. 
+            Exemplo: {name: 'foo.bar', file: 'IJHJHbkhyi876'}`,
             'AttachmentShouldHaveFile'
         );
     }
@@ -218,15 +224,15 @@ class AttachmentShouldHaveFile extends ExtendableError {
 
 class AttachmentFileShouldBeBase64 extends ExtendableError {
     constructor() {
-        super('Attachment file should be in base64.', 'AttachmentFileShouldBeBase64');
+        super('O arquivo do anexo tem que estar em base64.', 'AttachmentFileShouldBeBase64');
     }
 }
 
 class AttachmentSizeLimit extends ExtendableError {
     constructor(limit, name, diff) {
         super(
-            `The size of one of the attachments exceeds the of ${limit} MB allowed. 
-            The attachment '${name}' exceeds in ${diff} MB`,
+            `O tamanho dos anexos excedem o limite de ${limit} MB permitido. 
+            O anexo '${name}' excede em ${diff} MB`,
             'AttachmentSizeLimit'
         );
     }
@@ -235,8 +241,8 @@ class AttachmentSizeLimit extends ExtendableError {
 class AttachmentsSizeLimit extends ExtendableError {
     constructor(limit, diff) {
         super(
-            `The sum of the size of the attachments exceeds the ${limit} MB allowed. 
-            The total exceeds in ${diff} MB`,
+            `A soma do tamanho dos anexos excede o limite de ${limit} MB permitido. 
+            O total excede em ${diff} MB`,
             'AttachmentSizeLimit'
         );
     }
@@ -244,51 +250,51 @@ class AttachmentsSizeLimit extends ExtendableError {
 
 class BatchIsRequired extends ExtendableError {
     constructor(contacts) {
-        super(`Can not send more than ${contacts} contacts without providing 
-        batch parameter with minimum value of 2`, 'BatchIsRequired');
+        super(`Não pode enviar mais do que ${contacts} emails sem fornecer
+        o parâmetro batch com uma valor mínimo de 2`, 'BatchIsRequired');
     }
 }
 
 class InvalidBatch extends ExtendableError {
     constructor() {
-        super('Parameter not supplied or value is invalid', 'InvalidBatch');
+        super('Parâmetro não fornecido ou valor inválido', 'InvalidBatch');
     }
 }
 
 class BatchParamsNotInform extends ExtendableError {
     constructor() {
         super(
-            'Parameters "batchs" and "recipientsPerBatchs" not supplied', 'BatchParamsNotInform'
+            'Parâmetros "batchs" e "recipientsPerBatchs" não fornecidos', 'BatchParamsNotInform'
         );
     }
 }
 
 class InvalidTimeBetweemBatchs extends ExtendableError {
     constructor() {
-        super('Parameter not supplied or value is invalid', 'InvalidTimeBetweemBatchs');
+        super('Parâmetro não fornecido ou valor inválido', 'InvalidTimeBetweemBatchs');
     }
 }
 
 class BatchLowerThan2 extends ExtendableError {
     constructor() {
-        super('The parameter is less than 2', 'BatchLowerThan2');
+        super('O parâmetro é menor que 2', 'BatchLowerThan2');
     }
 }
 
 class TimeBetweemBatchsLessThan5 extends ExtendableError {
     constructor() {
-        super('The parameter is less than 5', 'TimeBetweemBatchsLessThan5');
+        super('O parâmetro é menor que 5', 'TimeBetweemBatchsLessThan5');
     }
 }
 
 class BatchSizeLimit extends ExtendableError {
     constructor(limit) {
-        super(`Batch size exceeds the limit of ${limit} emails`, 'BatchSizeLimit');
+        super(`O tamanho do batch excede o limite de ${limit} emails`, 'BatchSizeLimit');
     }
 }
 
 class RecipientPerBatchGreater extends ExtendableError {
-    constructor(limit) {
+    constructor() {
         super(
             'O valor do parâmetro "recipientsPerBatchs" é maior que a quantidade de destinatários',
             'RecipientPerBatchGreater'
@@ -299,8 +305,8 @@ class RecipientPerBatchGreater extends ExtendableError {
 class BatchDistributionInvalid extends ExtendableError {
     constructor() {
         super(
-            `The distribution between batches is invalid, probably the number 
-            of recipients is not multiple of batches`,
+            `A distribuição de batches é inválida, provavelmente o número de 
+            destinatários não é múltipla dos batches`,
             'BatchDistributionInvalid'
         );
     }

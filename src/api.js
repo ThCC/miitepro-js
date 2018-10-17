@@ -5,7 +5,7 @@ import querystring from 'querystring';
 import { NoPublicKey, NoSecretKey, InvalidServerUri, TimeoutError } from './exceptions';
 
 /*
-* VERSION 1.8.0
+* VERSION 1.8.3
 * */
 
 const apis = {

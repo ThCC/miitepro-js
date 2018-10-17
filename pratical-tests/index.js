@@ -190,8 +190,8 @@ const self = {
         const actions = [
             // 'simpleTextTestAttachs',
             // 'templateTestAttachs',
-            // 'simpleTextTest',
-            'templateTest',
+            'simpleTextTest',
+            // 'templateTest',
             // 'searchEmails', 'getSpecificEmails'
         ];
         const done = _.after(actions.length, () => {

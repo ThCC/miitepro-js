@@ -5,7 +5,7 @@ import querystring from 'querystring';
 import { NoPublicKey, NoSecretKey, InvalidServerUri, TimeoutError } from './exceptions';
 
 /*
-* VERSION 1.8.4
+* VERSION 1.8.6
 * */
 
 const apis = {
@@ -78,10 +78,16 @@ export default class Api {
                             throw new TimeoutError(this.timeout);
                         }
                     } else if (this.returnRawError) {
-                        errResponse = {
-                            error,
-                            body: body.slice(0, body.indexOf('Request Method')).trim(),
-                        };
+                        if (_.isString(body)) {
+                            errResponse = {
+                                error,
+                                body: body.slice(0, body.indexOf('Request Method')).trim(),
+                            };
+                        } else {
+                            errResponse = {
+                                error: _.has(body, 'error') ? body.error : body.detail,
+                            };
+                        }
                     } else {
                         let err = error;
                         if (!err) {
@@ -92,7 +98,7 @@ export default class Api {
                                 msgError = _.has(body, 'error') ? body.error : body.detail;
                             }
 
-                            err = { Error: msgError };
+                            err = { error: msgError };
                         }
                         errResponse = err;
                     }

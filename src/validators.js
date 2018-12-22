@@ -8,13 +8,14 @@ import {
     InvalidFrom,
     InvalidBatch,
     NoReplyEmail,
-    InvalidSendAt,
     BatchSizeLimit,
     BatchLowerThan2,
     BatchIsRequired,
     WrongTypeParamX,
     InvalidFromFormat,
+    InvalidSendAtFormat,
     AttachmentSizeLimit,
+    SendAtLowerThanToday,
     BatchParamsNotInform,
     AttachmentsSizeLimit,
     InvalidRecipientList,
@@ -93,7 +94,10 @@ export default class Validators {
     validateSendAt() {
         if (_.has(this.params, 'sendAt') && this.params.sendAt) {
             if (!moment(this.params.sendAt, ['YYYY-MM-DD HH:mm:ss'], true).isValid()) {
-                throw new InvalidSendAt();
+                throw new InvalidSendAtFormat();
+            }
+            if (moment(this.params.sendAt).isBefore(moment())) {
+                throw new SendAtLowerThanToday();
             }
         }
     }

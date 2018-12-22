@@ -167,9 +167,15 @@ class ParamsShouldBeObject extends ExtendableError {
     }
 }
 
-class InvalidSendAt extends ExtendableError {
+class InvalidSendAtFormat extends ExtendableError {
     constructor() {
-        super("O formato esperado 'YYYY-MM-DD HH:mm:ss' não foi encontrado", 'InvalidSendAt');
+        super("O formato esperado 'YYYY-MM-DD HH:mm:ss' não foi encontrado", 'InvalidSendAtFormat');
+    }
+}
+
+class SendAtLowerThanToday extends ExtendableError {
+    constructor() {
+        super('O valor para data tem que ser maior do que a atual', 'SendAtLowerThanToday');
     }
 }
 
@@ -328,7 +334,6 @@ export {
     NoSearchArgs,
     TimeoutError,
     InvalidBatch,
-    InvalidSendAt,
     BatchSizeLimit,
     BatchIsRequired,
     BatchLowerThan2,
@@ -337,6 +342,8 @@ export {
     InvalidServerUri,
     InvalidFromFormat,
     AttachmentSizeLimit,
+    InvalidSendAtFormat,
+    SendAtLowerThanToday,
     BatchParamsNotInform,
     AttachmentsSizeLimit,
     NoSearchArgsInstance,

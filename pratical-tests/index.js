@@ -120,6 +120,7 @@ const self = {
             trackOpen: true,
             trackHtmlLink: true,
             timeBetweenBatchs: 5,
+            sendAt: '2018-11-16 10:45:00',
             headers: {'systemTakesOverBatchs': true}
         };
         if (attachments) params.attachments = attachments;
@@ -190,8 +191,8 @@ const self = {
         const actions = [
             // 'simpleTextTestAttachs',
             // 'templateTestAttachs',
-            'simpleTextTest',
-            // 'templateTest',
+            // 'simpleTextTest',
+            'templateTest',
             // 'searchEmails', 'getSpecificEmails'
         ];
         const done = _.after(actions.length, () => {

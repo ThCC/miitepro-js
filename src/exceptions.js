@@ -254,70 +254,6 @@ class AttachmentsSizeLimit extends ExtendableError {
     }
 }
 
-class BatchIsRequired extends ExtendableError {
-    constructor(contacts) {
-        super(`Não pode enviar mais do que ${contacts} emails sem fornecer
-        o parâmetro batch com uma valor mínimo de 2`, 'BatchIsRequired');
-    }
-}
-
-class InvalidBatch extends ExtendableError {
-    constructor() {
-        super('Parâmetro não fornecido ou valor inválido', 'InvalidBatch');
-    }
-}
-
-class BatchParamsNotInform extends ExtendableError {
-    constructor() {
-        super(
-            'Parâmetros "batchs" e "recipientsPerBatchs" não fornecidos', 'BatchParamsNotInform'
-        );
-    }
-}
-
-class InvalidTimeBetweemBatchs extends ExtendableError {
-    constructor() {
-        super('Parâmetro não fornecido ou valor inválido', 'InvalidTimeBetweemBatchs');
-    }
-}
-
-class BatchLowerThan2 extends ExtendableError {
-    constructor() {
-        super('O parâmetro é menor que 2', 'BatchLowerThan2');
-    }
-}
-
-class TimeBetweemBatchsLessThan5 extends ExtendableError {
-    constructor() {
-        super('O parâmetro é menor que 5', 'TimeBetweemBatchsLessThan5');
-    }
-}
-
-class BatchSizeLimit extends ExtendableError {
-    constructor(limit) {
-        super(`O tamanho do batch excede o limite de ${limit} emails`, 'BatchSizeLimit');
-    }
-}
-
-class RecipientPerBatchGreater extends ExtendableError {
-    constructor() {
-        super(
-            'O valor do parâmetro "recipientsPerBatchs" é maior que a quantidade de destinatários',
-            'RecipientPerBatchGreater'
-        );
-    }
-}
-
-class BatchDistributionInvalid extends ExtendableError {
-    constructor() {
-        super(
-            `A distribuição de batches é inválida, provavelmente o número de 
-            destinatários não é múltipla dos batches`,
-            'BatchDistributionInvalid'
-        );
-    }
-}
-
 export {
     ApiError,
     NoMail,
@@ -333,10 +269,6 @@ export {
     NoReplyEmail,
     NoSearchArgs,
     TimeoutError,
-    InvalidBatch,
-    BatchSizeLimit,
-    BatchIsRequired,
-    BatchLowerThan2,
     WrongTypeParamX,
     NotMailInstance,
     InvalidServerUri,
@@ -344,20 +276,15 @@ export {
     AttachmentSizeLimit,
     InvalidSendAtFormat,
     SendAtLowerThanToday,
-    BatchParamsNotInform,
     AttachmentsSizeLimit,
     NoSearchArgsInstance,
     NoTemplateNoFeatures,
     InvalidRecipientList,
     ParamsShouldBeObject,
     AttachmentsShouldBeList,
-    RecipientPerBatchGreater,
     AttachmentShouldBeObject,
     AttachmentShouldHaveName,
     AttachmentShouldHaveFile,
-    InvalidTimeBetweemBatchs,
-    BatchDistributionInvalid,
-    TimeBetweemBatchsLessThan5,
     InvalidFormatRecipientList,
     AttachmentFileShouldBeBase64,
 };

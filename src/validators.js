@@ -6,17 +6,12 @@ import {
     NoSubject,
     NoRecipient,
     InvalidFrom,
-    InvalidBatch,
     NoReplyEmail,
-    BatchSizeLimit,
-    BatchLowerThan2,
-    BatchIsRequired,
     WrongTypeParamX,
     InvalidFromFormat,
     InvalidSendAtFormat,
     AttachmentSizeLimit,
     SendAtLowerThanToday,
-    BatchParamsNotInform,
     AttachmentsSizeLimit,
     InvalidRecipientList,
     ParamsShouldBeObject,
@@ -25,10 +20,6 @@ import {
     AttachmentShouldBeObject,
     AttachmentShouldHaveName,
     AttachmentShouldHaveFile,
-    InvalidTimeBetweemBatchs,
-    BatchDistributionInvalid,
-    RecipientPerBatchGreater,
-    TimeBetweemBatchsLessThan5,
     InvalidFormatRecipientList,
     AttachmentFileShouldBeBase64,
 } from './exceptions';
@@ -40,8 +31,6 @@ export default class Validators {
             megabytes: 10,
             bytes: 10 * 1024 * 1024,
         };
-        this.batchMinSize = 2;
-        this.batchMinTime = 5;
         this.totalEmailLimit = 500;
     }
 
@@ -72,14 +61,6 @@ export default class Validators {
                 throw new InvalidRecipientList(recipient);
             }
         });
-
-        const batchs = this.attrInParams('batchs') ? this.params.batchs : null;
-        const totalRecipients = this.params.recipientList.length;
-        if (batchs === null
-            && this.attrNotInHeaders('systemTakesOverBatchs')
-            && totalRecipients > this.totalEmailLimit) {
-            throw new BatchIsRequired(totalRecipients);
-        }
     }
 
     validadeFrom() {
@@ -137,75 +118,6 @@ export default class Validators {
         }
     }
 
-    validateBatchsArgs() {
-        if (this.attrNotInParams('batchs') && this.attrNotInParams('timeBetweenBatchs')
-            && this.attrNotInParams('recipientsPerBatchs')) return true;
-
-        if (this.attrNotInParams('timeBetweenBatchs')) throw new InvalidTimeBetweemBatchs();
-        if (!_.isNumber(this.params.timeBetweenBatchs)) throw new InvalidTimeBetweemBatchs();
-        if (this.params.timeBetweenBatchs < this.batchMinTime) {
-            throw new TimeBetweemBatchsLessThan5();
-        }
-        const tempTime = _.floor(this.params.timeBetweenBatchs);
-        const timeBetweenBatchs = this.batchMinTime * _.floor(tempTime / this.batchMinTime);
-        if (timeBetweenBatchs < this.batchMinTime) throw new InvalidTimeBetweemBatchs();
-        this.params.timeBetweenBatchs = timeBetweenBatchs;
-
-        if (this.attrInHeaders('systemTakesOverBatchs')) return true;
-
-        if (this.attrNotInParams('batchs') && this.attrNotInParams('recipientsPerBatchs')) {
-            throw new BatchParamsNotInform();
-        }
-
-        const totalRecipients = this.params.recipientList.length;
-        if (this.attrInParams('recipientsPerBatchs')) {
-            if (!_.isNumber(this.params.recipientsPerBatchs)) {
-                throw new InvalidBatch();
-            }
-            if (this.params.recipientsPerBatchs < this.batchMinSize) {
-                throw new BatchLowerThan2();
-            }
-            const recipientsPerBatchs = _.floor(this.params.recipientsPerBatchs);
-            if (recipientsPerBatchs < this.batchMinSize) {
-                throw new InvalidBatch();
-            }
-            this.params.recipientsPerBatchs = recipientsPerBatchs;
-
-            if (recipientsPerBatchs > totalRecipients) {
-                throw new RecipientPerBatchGreater();
-            }
-        } else if (this.attrInParams('batchs')) {
-            if (!_.isNumber(this.params.batchs)) {
-                throw new InvalidBatch();
-            }
-            if (this.params.batchs < this.batchMinSize) {
-                throw new BatchLowerThan2();
-            }
-            const batchs = _.floor(this.params.batchs);
-            if (batchs < this.batchMinSize) {
-                throw new InvalidBatch();
-            }
-            this.params.batchs = batchs;
-            const batchsSize = _.floor(totalRecipients / this.params.batchs);
-
-            if (batchsSize > this.totalEmailLimit) {
-                throw new BatchSizeLimit(this.totalEmailLimit);
-            }
-
-            const remaining = totalRecipients % batchs;
-            const lastBatchPlusOne = this.attrInHeaders('lastBatchPlusOne');
-
-            if (remaining && lastBatchPlusOne) return true;
-
-            if ((batchsSize * batchs) !== totalRecipients) {
-                throw new BatchDistributionInvalid();
-            }
-        } else {
-            throw new BatchParamsNotInform();
-        }
-        return true;
-    }
-
     attrNotInParams(attr) {
         return !_.has(this.params, attr) || !this.params[attr];
     }
@@ -234,7 +146,6 @@ export default class Validators {
         if (this.attrNotInParams('recipientList')) throw new NoRecipient();
         if (!_.isArray(this.params.recipientList)) throw new NoRecipient();
         if (!this.params.recipientList.length) throw new NoRecipient();
-        this.validateBatchsArgs();
         this.validateRecipients();
         this.validateSendAt();
 

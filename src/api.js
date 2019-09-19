@@ -5,7 +5,7 @@ import querystring from 'querystring';
 import { NoPublicKey, NoSecretKey, InvalidServerUri, TimeoutError } from './exceptions';
 
 /*
-* VERSION 1.8.6
+* VERSION 1.9.0
 * */
 
 const apis = {
@@ -40,7 +40,7 @@ export default class Api {
         this.apiKey = key;
         this.apiSecret = secret;
         this.returnRawError = returnRawError || false;
-        this.serverUri = serverUri || 'mittepro.mittepro.svc';
+        this.serverUri = serverUri || 'http://www.mitte.pro';
         this.timeout = timeoutRead * 1000;
     }
     sendRequest(payload, endpoint, method, headers) {

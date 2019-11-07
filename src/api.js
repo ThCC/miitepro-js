@@ -1,12 +1,20 @@
 import _ from 'lodash';
 import request from 'request';
-import signature from 'apysignature';
 import querystring from 'querystring';
+import { Token, Request } from './apysignature';
 import { NoPublicKey, NoSecretKey, InvalidServerUri, TimeoutError } from './exceptions';
 
 /*
-* VERSION 1.9.0
+* VERSION 1.10.0
 * */
+
+class AuthTimeStampError extends Error {
+    constructor(message) {
+        super();
+        this.message = message; 
+        this.name = 'AuthTimeStampError';
+    }
+}
 
 const apis = {
     text: '/api/send_mail/',
@@ -17,9 +25,9 @@ const apis = {
 
 function getUrl(options) {
     const sendMethod = apis[options.endpoint];
-    const signedReq = new signature.Request(options.method, sendMethod, {});
-    const token = new signature.Token(options.apiKey, options.apiSecret);
-    token.sign(signedReq);
+    const token = new Token(options.apiKey, options.apiSecret);
+    const signedReq = new Request(options.method, sendMethod, {});
+    token.sign(signedReq, options.authTimestamp);
     const authDict = signedReq.getAuthDict();
     return `${options.serverUri}${sendMethod}?${querystring.stringify(authDict)}`;
 }
@@ -43,7 +51,8 @@ export default class Api {
         this.serverUri = serverUri || 'http://www.mitte.pro';
         this.timeout = timeoutRead * 1000;
     }
-    sendRequest(payload, endpoint, method, headers) {
+    sendRequest(payload, endpoint, method, headers, authTimestamp) {
+        if (!authTimestamp) authTimestamp = null;
         const httpMethod = method ? method.toLowerCase() : 'post';
         const url = getUrl({
             apiKey: this.apiKey,
@@ -51,6 +60,7 @@ export default class Api {
             serverUri: this.serverUri,
             method: httpMethod,
             endpoint,
+            authTimestamp,
         });
         const options = {
             url,
@@ -63,48 +73,69 @@ export default class Api {
         } else {
             options.json = payload;
         }
-        return new Promise((f, reject) => {
+        return new Promise((resolve, reject) => {
             request(options, (error, response, body) => {
                 if (!error && [200, 201].indexOf(response.statusCode) > -1) {
-                    f(body);
+                    resolve(body);
                 } else {
-                    let errResponse = null;
-                    if (error && (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT')) {
-                        errResponse = {
-                            error: `The server did not respond within the 
-                            ${this.timeout} second(s) you stipulated`,
-                        };
-                        if (this.returnRawError) {
-                            throw new TimeoutError(this.timeout);
-                        }
-                    } else if (this.returnRawError) {
-                        if (_.isString(body)) {
-                            errResponse = {
-                                error,
-                                body: body.slice(0, body.indexOf('Request Method')).trim(),
-                            };
+                    try {
+                        const errResponse = this.errorTreatment(error, body);
+                        reject(errResponse);
+                    } catch (e) {
+                        if (e.name = 'AuthTimeStampError') {
+                            const rightAuthTimestamp = this.getRightAuthTimestamp(e.message);
+                            this.sendRequest(
+                                payload,
+                                endpoint,
+                                method,
+                                headers,
+                                rightAuthTimestamp
+                            ).then((result) => {
+                                resolve(result);
+                            }, (error) => {
+                                reject(error);
+                            });
                         } else {
-                            errResponse = {
-                                error: _.has(body, 'error') ? body.error : body.detail,
-                            };
+                            reject(e.message);
                         }
-                    } else {
-                        let err = error;
-                        if (!err) {
-                            let msgError;
-                            if (_.isString(body)) {
-                                msgError = body.slice(0, body.indexOf('Request Method')).trim();
-                            } else {
-                                msgError = _.has(body, 'error') ? body.error : body.detail;
-                            }
-
-                            err = { error: msgError };
-                        }
-                        errResponse = err;
                     }
-                    reject(errResponse);
                 }
             });
         });
+    }
+    getRightAuthTimestamp(msg) {
+        const tempStr = msg.substring(msg.indexOf('Server time: '), msg.length + 1);
+        return tempStr.substring(tempStr.indexOf(': ') + 2, tempStr.length + 1);
+    }
+    getErrorMsg(body) {
+        if (_.isString(body)) {
+            return body.slice(0, body.indexOf('Request Method')).trim();
+        } else {
+            return _.has(body, 'error') ? body.error : body.detail;
+        }
+    }
+    errorTreatment(error, body) {
+        let errResponse = null;
+        const errorMsg = this.getErrorMsg(body);
+        if (error && (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT')) {
+            errResponse = {
+                error: `The server did not respond within the 
+                ${this.timeout} second(s) you stipulated`,
+            };
+            if (this.returnRawError) {
+                throw new TimeoutError(this.timeout);
+            }
+        } else if (errorMsg.indexOf('Server time: ') > 0) {
+            throw new AuthTimeStampError(errorMsg);
+        } else if (this.returnRawError) {
+            if (_.isString(body)) {
+                errResponse = { error, body: errorMsg };
+            } else {
+                errResponse = { error: errorMsg };
+            }
+        } else {
+            errResponse = !error ? { error: errorMsg } : error;
+        }
+        return errResponse;
     }
 }

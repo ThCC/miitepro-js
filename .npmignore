@@ -1,4 +1,5 @@
 scripts/
 .idea/
 src/
-pratical-tests/
+pratical-test/
+test.js

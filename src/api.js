@@ -48,7 +48,7 @@ export default class Api {
         this.apiKey = key;
         this.apiSecret = secret;
         this.returnRawError = returnRawError || false;
-        this.serverUri = serverUri || 'http://www.mitte.pro';
+        this.serverUri = serverUri || 'https://www.mitte.pro';
         this.timeout = timeoutRead * 1000;
     }
     sendRequest(payload, endpoint, method, headers, authTimestamp) {
